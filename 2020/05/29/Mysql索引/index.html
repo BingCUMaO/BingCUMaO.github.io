@@ -1,0 +1,485 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mysql索引 | BinGCUのBlog</title><meta name="description" content="1、什么是索引（1）事前说明： 索引是按一定顺序储存数据的数据结构。  许多文章都拿查字典的例子来比喻并引进索引的概念，作者认为这个例子很好很经典，但也有所欠缺的地方，因此，本文会拿该例子作为开篇并对该例子进行适当补充解释。 （2）字典的结构：当我们持有一本汉语词典，我们会把字典的结构分为两个部分，一是目录，二是内容部分。 为了方便，我们暂且将目录称为D_part，内容为C_part。（表示Dir"><meta name="author" content="BinGCU"><meta name="copyright" content="BinGCU"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.png"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="crossorigin"/><link rel="dns-prefetch" href="https://fonts.googleapis.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="dns-prefetch" href="//busuanzi.ibruce.info"/><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Mysql索引"><meta name="twitter:description" content="1、什么是索引（1）事前说明： 索引是按一定顺序储存数据的数据结构。  许多文章都拿查字典的例子来比喻并引进索引的概念，作者认为这个例子很好很经典，但也有所欠缺的地方，因此，本文会拿该例子作为开篇并对该例子进行适当补充解释。 （2）字典的结构：当我们持有一本汉语词典，我们会把字典的结构分为两个部分，一是目录，二是内容部分。 为了方便，我们暂且将目录称为D_part，内容为C_part。（表示Dir"><meta name="twitter:image" content="http://bingcu.com/img/article_covers/26.jpg"><meta property="og:type" content="article"><meta property="og:title" content="Mysql索引"><meta property="og:url" content="http://bingcu.com/2020/05/29/Mysql%E7%B4%A2%E5%BC%95/"><meta property="og:site_name" content="BinGCUのBlog"><meta property="og:description" content="1、什么是索引（1）事前说明： 索引是按一定顺序储存数据的数据结构。  许多文章都拿查字典的例子来比喻并引进索引的概念，作者认为这个例子很好很经典，但也有所欠缺的地方，因此，本文会拿该例子作为开篇并对该例子进行适当补充解释。 （2）字典的结构：当我们持有一本汉语词典，我们会把字典的结构分为两个部分，一是目录，二是内容部分。 为了方便，我们暂且将目录称为D_part，内容为C_part。（表示Dir"><meta property="og:image" content="http://bingcu.com/img/article_covers/26.jpg"><meta property="article:published_time" content="2020-05-29T11:46:42.727Z"><meta property="article:modified_time" content="2020-05-29T11:44:49.900Z"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>var autoChangeMode = '1'
+var t = Cookies.get("theme")
+if (autoChangeMode == '1'){
+  var isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+  var isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+  var isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined){
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport){
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour < 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+  }
+  } else if (t == 'light') activateLightMode()
+  else activateDarkMode()
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="canonical" href="http://bingcu.com/2020/05/29/Mysql%E7%B4%A2%E5%BC%95/"><link rel="next" title="Mysql多版本安装（Window10）" href="http://bingcu.com/2020/05/29/Mysql%E5%A4%9A%E7%89%88%E6%9C%AC%E5%AE%89%E8%A3%85%EF%BC%88Window10%EF%BC%89/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5/js/md5.min.js"></script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"cookieDomain":"https://xxx/","msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  bookmark: {
+    message_prev: 'Press',
+    message_next: 'to bookmark this page'
+  },
+  runtime_unit: 'days',
+  runtime: true,
+  copyright: {"languages":{"author":"Author: BinGCU","link":"Link: ","source":"Source: BinGCUのBlog","info":"Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source."}},
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  highlightShrink: 'true',
+  isFontAwesomeV5: false,
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: true
+  
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isSidebar: true  
+  }</script><noscript><style>
+#page-header {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.1"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">Articles</div><div class="length_num">2</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fa fa-list" aria-hidden="true"></i><span> Amusement</span><i class="fa fa-chevron-down menus-expand" aria-hidden="true"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fa fa-film"></i><span> Movie</span></a></li></ul></div></div></div></div><i class="fa fa-arrow-right on" id="toggle-sidebar" aria-hidden="true">     </i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1、什么是索引"><span class="toc-text">1、什么是索引</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#（1）事前说明："><span class="toc-text">（1）事前说明：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#（2）字典的结构："><span class="toc-text">（2）字典的结构：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#（3）拼音查找："><span class="toc-text">（3）拼音查找：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#（3）偏旁查找："><span class="toc-text">（3）偏旁查找：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#（4）聚集索引和非聚集索引"><span class="toc-text">（4）聚集索引和非聚集索引</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#①聚集索引"><span class="toc-text">①聚集索引</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#②非聚集索引"><span class="toc-text">②非聚集索引</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2、为什么需要索引"><span class="toc-text">2、为什么需要索引</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#（1）我们先来看看官方的定义"><span class="toc-text">（1）我们先来看看官方的定义:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#（2）理解："><span class="toc-text">（2）理解：</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3、如何创建索引"><span class="toc-text">3、如何创建索引</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#（1）Create语法"><span class="toc-text">（1）Create语法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#（2）Alter-Table语法"><span class="toc-text">（2）Alter Table语法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#（3）删除索引"><span class="toc-text">（3）删除索引</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4、Mysql中的B-tree"><span class="toc-text">4、Mysql中的B+tree</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#（1）什么是B-tree"><span class="toc-text">（1）什么是B+tree</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#①B-tree是一种多叉的自平衡查找树，它是B-tree的一种变体。"><span class="toc-text">①B+tree是一种多叉的自平衡查找树，它是B-tree的一种变体。</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#②B-tree是B-tree的变体，与B-tree不同的是："><span class="toc-text">②B+tree是B-tree的变体，与B-tree不同的是：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#（2）InnoDB引擎中的B-tree索引"><span class="toc-text">（2）InnoDB引擎中的B+tree索引</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#①准备"><span class="toc-text">①准备</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#②开始流程"><span class="toc-text">②开始流程</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#③简单的拓展思考"><span class="toc-text">③简单的拓展思考</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#④比较"><span class="toc-text">④比较</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#（3）MyISAM引擎中的B-tree索引"><span class="toc-text">（3）MyISAM引擎中的B+tree索引</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5、凡事都有两面性，使用索引的利与弊"><span class="toc-text">5、凡事都有两面性，使用索引的利与弊</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#利："><span class="toc-text">利：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#弊："><span class="toc-text">弊：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6、唯一索引"><span class="toc-text">6、唯一索引</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#7、单值索引与复合索引"><span class="toc-text">7、单值索引与复合索引</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#单值索引"><span class="toc-text">单值索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#复合索引"><span class="toc-text">复合索引</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#8、覆盖索引"><span class="toc-text">8、覆盖索引</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#（1）主键索引"><span class="toc-text">（1）主键索引</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#（2）回表"><span class="toc-text">（2）回表</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#（3）索引覆盖"><span class="toc-text">（3）索引覆盖</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#9、索引下推"><span class="toc-text">9、索引下推</span></a></li></ol></div></div></div><div id="body-wrap"><div id="web_bg" data-type="photo"></div><div class="post-bg" id="nav" style="background-image: url(/img/article_covers/26.jpg)"><div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">BinGCUのBlog</a></span><span class="pull_right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fa fa-list" aria-hidden="true"></i><span> Amusement</span><i class="fa fa-chevron-down menus-expand" aria-hidden="true"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fa fa-film"></i><span> Movie</span></a></li></ul></div></div><span class="toggle-menu close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span></span></div><div id="post-info"><div id="post-title"><div class="posttitle">Mysql索引</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="Created 2020-05-29 19:46:42"><i class="fa fa-calendar" aria-hidden="true"></i> Created 2020-05-29</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="Updated 2020-05-29 19:44:49"><i class="fa fa-history" aria-hidden="true"></i> Updated 2020-05-29</span></time></div><div class="meta-secondline"> </div><div class="meta-thirdline"><span class="post-meta-pv-cv"><i class="fa fa-eye post-meta__icon" aria-hidden="true"> </i><span>Post View:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"><span class="post-meta__separator">|</span><i class="post-meta__icon fa fa-comment-o" aria-hidden="true"></i><span>Comments:</span><a href="/2020/05/29/Mysql%E7%B4%A2%E5%BC%95/#post-comment"><span class="gitalk-comment-count comment-count"></span></a></span></div></div></div></div><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h1 id="1、什么是索引"><a href="#1、什么是索引" class="headerlink" title="1、什么是索引"></a>1、什么是索引</h1><h5 id="（1）事前说明："><a href="#（1）事前说明：" class="headerlink" title="（1）事前说明："></a>（1）事前说明：</h5><ul>
+<li>索引是<strong>按一定顺序</strong>储存数据的<strong>数据结构</strong>。</li>
+</ul>
+<p>许多文章都拿查字典的例子来比喻并引进索引的概念，作者认为这个例子很好很经典，但也有所欠缺的地方，因此，本文会拿该例子作为开篇并对该例子进行适当补充解释。</p>
+<h5 id="（2）字典的结构："><a href="#（2）字典的结构：" class="headerlink" title="（2）字典的结构："></a>（2）字典的结构：</h5><p>当我们持有一本汉语词典，我们会把字典的结构分为两个部分，一是目录，二是内容部分。</p>
+<p>为了方便，我们暂且将目录称为<strong>D_part</strong>，内容为<strong>C_part</strong>。（表示Directory part和Content part）</p>
+<h5 id="（3）拼音查找："><a href="#（3）拼音查找：" class="headerlink" title="（3）拼音查找："></a>（3）拼音查找：</h5><p>当我们要查“丨”（gǔn）字的时候，我们会去D_part查拼音为gun的汉字所在的页码。假如在D_part中不存在该字，那则表明你的字典中不存在“丨”字。相反，如果你通过拼音“gun”在D_part中找到了“丨”字，那你可以通过D_part中所标注的该字的页码，快速定位到“丨”字在C_part的具体位置。</p>
+<p>这个过程我们通过英文字母a~z的顺序，在目录中快速定位g所在的D_part位置，然后快速定位gun的C_part位置。无数的汉字中，不仅仅D_part是根据a~z进行排序的，连C_part的内容也是根据a~z进行排序的，这就是有序的拼音查找。</p>
+<p>简单点总结： D_part和C_part都按一定的顺序（即a~z的顺序）进行排列。</p>
+<h5 id="（3）偏旁查找："><a href="#（3）偏旁查找：" class="headerlink" title="（3）偏旁查找："></a>（3）偏旁查找：</h5><p>当我们要查“该”字的时候，我们并不知道这个字的拼音。并且，我们无法像拼音查找那样通过a~z的顺序进行查找，而只能将同类偏旁的汉字聚集成一个集合，并列出在D_part中。同时，同一个偏旁的两个字，在C_part中的位置，那有可能一个在“天涯”，一个在“海角”，即一个可能在第1页，另一个在999页。也有可能这两个字是紧挨着相邻的，都在第100页。</p>
+<p>例如，同个偏旁的“恺”、“慨”和“情”，即读音为{kǎi、kǎi、qíng}。“恺”和“慨”不仅偏旁相同，而且读音也相同，那么这两个字，可能会同在第100页，而“情”字却可能在最后一页。</p>
+<p>简单点总结：D_part按偏旁相同的汉字的集合来作为有顺序的目录索引，而C_part不是按偏旁排序，甚至可能随机分布。</p>
+<h5 id="（4）聚集索引和非聚集索引"><a href="#（4）聚集索引和非聚集索引" class="headerlink" title="（4）聚集索引和非聚集索引"></a>（4）聚集索引和非聚集索引</h5><p><em>ok，理解上面抽象的概念，我们开始将上面的概念对应到实际物理硬盘文件中。</em></p>
+<p>假如我们先创建两个文件，index.file和data.file（分别对应上面例子的<strong>D_part</strong>和<strong>C_part</strong>）。</p>
+<p>并将index.file中的所有内容按0~9的顺序排序。</p>
+<h6 id="①聚集索引"><a href="#①聚集索引" class="headerlink" title="①聚集索引"></a>①聚集索引</h6><p>定义——<strong>数据行的<em>物理顺序</em>与列值（一般是主键的那一列）的<em>逻辑顺序</em>相同，一个表中只能拥有一个聚集索引。</strong></p>
+<p>类比拼音查找的方式，index.file和data.file都是按顺序排序的，并且按顺序一一对应，如图：</p>
+<p><img src="images/image-20200526135052821.png" alt="image-20200526135052821"></p>
+<p>既然是一一对应，那么我们为何不可将两个文件合并为一个文件？即：</p>
+<p><img src="images/image-20200526135403726.png" alt="image-20200526135403726"></p>
+<p>​        <strong>这种将索引文件与具体数据文件直接放在一起的结构，我们称为聚集索引。因为通过index就可以直接得到具体的data。但前提是两者本身就是按一定的顺序储存的，我们才能直接合并，否则如果是乱序排列，按这种方式来索引查找，那只会使人更加凌乱。</strong></p>
+<p><strong>需要注意的是，定义中说：一个表只能拥有一个聚集索引，为什么？因为这既然是按某种顺序进行排列的，那么这种顺序只能是唯一。比如按数字排列，0<del>9,10</del>99……这种顺序是唯一确定的，因此一个表只能是有一个聚集索引</strong></p>
+<h6 id="②非聚集索引"><a href="#②非聚集索引" class="headerlink" title="②非聚集索引"></a>②非聚集索引</h6><p>定义——<strong>该索引中索引的<em>逻辑顺序与磁盘上行的物理存储顺序不同</em>，一个表中可以拥有多个非聚集索引。</strong></p>
+<p>根据定义，再类比按偏旁进行索引的方式，可以知道，字典D_part中的内容是有规则次序的不同偏旁的集合，但所指向的C_part的位置却可能是混乱的。按这种方式，映射到文件中，虽然index.file中的index是有顺序的，但我们的index.file与data.file之间的对应关系却会感觉比较混乱，即：</p>
+<p><img src="images/image-20200526141236143.png" alt="image-20200526141236143"></p>
+<p>但是，我们却没办法像聚集索引那样，将index.file和data.file合并成一个文件。要论为什么，就必须结合我们数据库中的Table。</p>
+<p>data.file里面的内容其实就是数据库中的一个Table，而这个Table具有index和data两个字段。假如这个Table中你的index字段是随机产生的主键，那么从头到尾看下来，这个字段肯定不会是有序的（因为概率太小了，所以几乎不可能有序）。</p>
+<p>所以如果data.file要与index.file合并为同一个文件，那只能是要么index.file中的index字段乱序，要么data.file中的data字段乱序。如果data字段乱序，那么你的数据库中的表的次序也就直接改变了，因此不可以这么做。而如果如此index.file中的index字段乱序，拿就违背初衷了，因为索引其实就是用来快速查找数据用的。就像字典的目录混乱不堪，如此还怎么查汉字？</p>
+<ul>
+<li><strong>需要注意的是定义中说了，一个表可以拥有多个非聚集索引，为什么？对比聚集索引，由于聚集索引本身的index.file与data.file都是按顺序排列的，所以本身只能有一个聚集索引，而非聚集索引本身所指向的data.file的数据是乱序的，因此不受顺序规则的限制，可以有多个非聚集索引</strong></li>
+</ul>
+<p>③面纱：</p>
+<p>这个所谓的index.file和data.file，其实对应的是windows系统中mysql目录下的*.myi和*.myd文件，*.myi保存的是表的索引，*.myd保存的是表的数据记录。</p>
+<p><strong>myi：MYisam Index</strong></p>
+<p><strong>myd：MYisam Datas</strong></p>
+<p>ibd：InnoDB datas</p>
+<p>（作者电脑上的mysql目录位置是windows系统下的<strong>D:\MySQL\data\mysql</strong>）</p>
+<ul>
+<li>其中，MySql中的<strong>MyISAM引擎</strong>便是采用这种索引文件与数据文件相分离的储存结构，其B+tree的叶子节点储存的是指向<em>.myd 文件中数据的指针，即MyISAM采用*</em>非聚集索引**。</li>
+<li>而<strong>InnoDB引擎</strong>采用的是便是<strong>聚集索引</strong>，它将数据库中的索引字段提前先排序好，然后再将索引与数据储存进同一个文件中，这个合并之后的文件便是*.ibd/ibdata1。</li>
+<li>若想看自己mysql的数据文件储存路径，可通过mysql指令<code>show variables like &#39;datadir&#39;;</code></li>
+</ul>
+<h1 id="2、为什么需要索引"><a href="#2、为什么需要索引" class="headerlink" title="2、为什么需要索引"></a>2、为什么需要索引</h1><h5 id="（1）我们先来看看官方的定义"><a href="#（1）我们先来看看官方的定义" class="headerlink" title="（1）我们先来看看官方的定义:"></a>（1）我们先来看看官方的定义:</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Indexes are used to find rows with specific column values quickly. </span><br><span class="line">Without an index, MySQL must begin with the first row and then read through the entire table to find the relevant rows. </span><br><span class="line">The larger the table, the more this costs. If the table has an index for the columns in question, MySQL can quickly determine the position to seek to in the middle of the data file without having to look at all the data. </span><br><span class="line">This is much faster than reading every row sequentially.</span><br></pre></td></tr></table></figure>
+
+<p>意思大致是：正常没有索引的情况下，如果要找到某条记录，mysql必须从第一行开始，然后通读整个表以找到相关的行，表的行数越多，花费时间越多。如果有了索引，mysql就可以通过索引，快速确定要去数据文件中的哪个位置找数据，而不必遍历整个表。</p>
+<ul>
+<li>你目前可能对索引为什么能快速定位数据而感到疑惑，然而目前还未介绍索引的结构，等后面介绍索引的底层结构，你将会焕然大悟。可以说的是，尽管索引可以有R-tree、Hash、B-tree等数据结构所表示的各种形式的逻辑结构，但由于B+tree优秀的查找特性符合索引的需求，所以平时用的比较多的还是<strong>B+tree</strong>结构。</li>
+</ul>
+<h5 id="（2）理解："><a href="#（2）理解：" class="headerlink" title="（2）理解："></a>（2）理解：</h5><p>看了官方的定义，知道索引能快速定位，但结合聚集索引的两个图，可能会感觉加了索引，也没什么大变化。</p>
+<p>但假如一个有上千万行的User表，而当我要根据用户名（username）去查询张三的电话号码的时候，mysql并不知道该用户的信息处在哪一行，所以mysql只能选择去一行一行地比对username是否符合条件。即使你很幸运，第一条记录的username就是张三，但mysql还是得去遍历整张User表。因为叫张三的人不止一个！</p>
+<p>想一想，上千万行级别的表，每次去查找一次就得遍历一次整张表，那得多恐怖！因此，虽然你会觉得索引本身也是遍历，会觉得与遍历整张表差不多，但那只是你不知道索引的查询原理而已。我们需要知道的是索引的底层结构大都是B+tree，但暂且别管B+tree是如何让索引如此之快地查找，目前只需要知道B+tree能做到这件事情就够了，下文将会带你了解B+tree的结构。</p>
+<h1 id="3、如何创建索引"><a href="#3、如何创建索引" class="headerlink" title="3、如何创建索引"></a>3、如何创建索引</h1><h5 id="（1）Create语法"><a href="#（1）Create语法" class="headerlink" title="（1）Create语法"></a>（1）Create语法</h5><ul>
+<li><p>创建表时直接指定。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> table_name(  </span><br><span class="line">    <span class="keyword">ID</span> <span class="built_in">INT</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,   </span><br><span class="line">    user_name <span class="built_in">VARCHAR</span>(<span class="number">16</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,  </span><br><span class="line">    </span><br><span class="line">    [<span class="keyword">UNIQUE</span>]<span class="keyword">Index</span> [index_name] (user_name(<span class="keyword">length</span>))  </span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<ul>
+<li><p>CREATE INDEX可对已存在的表增加普通索引或UNIQUE索引。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- 添加普通索引</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> index_name <span class="keyword">ON</span> table_name (column_list)</span><br><span class="line"></span><br><span class="line">- 添加<span class="keyword">UNIQUE</span>索引</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">UNIQUE</span> <span class="keyword">INDEX</span> index_name <span class="keyword">ON</span> table_name (column_list)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<h5 id="（2）Alter-Table语法"><a href="#（2）Alter-Table语法" class="headerlink" title="（2）Alter Table语法"></a>（2）Alter Table语法</h5><ul>
+<li><p>ALTER TABLE用来添加普通索引、UNIQUE索引或PRIMARY KEY主键索引。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- 添加普通索引</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> table_name <span class="keyword">ADD</span> <span class="keyword">INDEX</span> index_name (column_list)</span><br><span class="line"></span><br><span class="line">- 添加<span class="keyword">UNIQUE</span>索引</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> table_name <span class="keyword">ADD</span> <span class="keyword">UNIQUE</span> (column_list)</span><br><span class="line"></span><br><span class="line">- 添加主键索引</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> table_name <span class="keyword">ADD</span> PRIMARY <span class="keyword">KEY</span> (column_list)</span><br></pre></td></tr></table></figure>
+<h5 id="（3）删除索引"><a href="#（3）删除索引" class="headerlink" title="（3）删除索引"></a>（3）删除索引</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">INDEX</span> [index_name] <span class="keyword">ON</span> table_name</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+</li>
+</ul>
+<h1 id="4、Mysql中的B-tree"><a href="#4、Mysql中的B-tree" class="headerlink" title="4、Mysql中的B+tree"></a>4、Mysql中的B+tree</h1><h3 id="（1）什么是B-tree"><a href="#（1）什么是B-tree" class="headerlink" title="（1）什么是B+tree"></a>（1）什么是B+tree</h3><h5 id="①B-tree是一种多叉的自平衡查找树，它是B-tree的一种变体。"><a href="#①B-tree是一种多叉的自平衡查找树，它是B-tree的一种变体。" class="headerlink" title="①B+tree是一种多叉的自平衡查找树，它是B-tree的一种变体。"></a>①B+tree是一种多叉的自平衡查找树，它是B-tree的一种变体。</h5><p><strong>正因为B+tree是由B-tree演变而来的一种查找结构，所以，在学习B+tree之前应该对以下知识有所了解。</strong></p>
+<ul>
+<li>二叉树</li>
+<li>二叉查找树</li>
+<li>平衡二叉树（AVL tree）</li>
+<li>平衡多路查找树（B-tree）</li>
+</ul>
+<h5 id="②B-tree是B-tree的变体，与B-tree不同的是："><a href="#②B-tree是B-tree的变体，与B-tree不同的是：" class="headerlink" title="②B+tree是B-tree的变体，与B-tree不同的是："></a>②B+tree是B-tree的变体，与B-tree不同的是：</h5><ul>
+<li><p>非叶子节点只储存键值信息。</p>
+</li>
+<li><p>所有的数据记录都存放在叶子节点中（下图黄色框中的数据）</p>
+</li>
+<li><p>叶子节点之间会通过双向指针互相链接左右两个叶子节点（绿色箭头），以便横向地快速访问其他叶子节点</p>
+</li>
+</ul>
+<p>  ps：画完所有图后，本作者发现自己将这里的双向指针画成了单向指针（绿色箭头）。</p>
+<p>  ​    由于图的数量比较多，同时也不影响理解，所以就不重新作图了，特此在这提醒各位读者。</p>
+<p>  <img src="images/image-20200526170254490.png" alt="image-20200526170254490"></p>
+<p>如图，根节点不储存数字1000，而是将自己分为n个区间，这里分为三个区间，即(-∞，100)、[100, 1000)、[1000, +∞)。同理，非叶子节点的子节点也都如此。最重要的一点是，所有具体的数据储存在叶子节点（即黄色框中的数据）。</p>
+<p>例如：我们要查找数字1000, 则只需要根据每个节点的区间，不断进入数字1000所存在区间，直至存放着数据的叶子节点。（请参照下图的<strong>红箭头</strong>）</p>
+<p>a步骤：<img src="images/image-20200526171348174.png" alt="image-20200526171348174"></p>
+<p>b步骤：<img src="images/image-20200526171434749.png" alt="image-20200526171434749"></p>
+<p>c步骤：</p>
+<p><img src="images/image-20200526171504573.png" alt="image-20200526171504573"></p>
+<h3 id="（2）InnoDB引擎中的B-tree索引"><a href="#（2）InnoDB引擎中的B-tree索引" class="headerlink" title="（2）InnoDB引擎中的B+tree索引"></a>（2）InnoDB引擎中的B+tree索引</h3><h5 id="①准备"><a href="#①准备" class="headerlink" title="①准备"></a>①准备</h5><p>要想说清楚mysql中的B+tree索引，我们就得结合数据库表，进行实际操作。</p>
+<p>不知读者是否还记得，上文中提到过InnoDB采用的聚集索引，因此下文采用的索引结构即为聚集索引。</p>
+<ul>
+<li>a：首先得先创建一张数据库表</li>
+</ul>
+<p><img src="images/image-20200526172841103.png" alt="image-20200526172841103"></p>
+<ul>
+<li>b：插入一些数据：</li>
+</ul>
+<p><img src="images/image-20200526173701377.png" alt="image-20200526173701377"></p>
+<h5 id="②开始流程"><a href="#②开始流程" class="headerlink" title="②开始流程"></a>②开始流程</h5><ul>
+<li><p>c：我们需要创建一个关于user_id字段的索引，但由于字段user_id是主键，而InnoDB会自动创建Primary Key索引，因此这里就不重复创建索引了。</p>
+<p>我们得到关于Index(user_id)的大致结构图（聚集索引的逻辑结构图）如下：</p>
+<p><img src="images/image-20200526180436685.png" alt="image-20200526180436685"></p>
+</li>
+<li><p>d：假如我要找user_id为2~6的用户</p>
+<p><code>select * from user_table where user_id&gt;=2 and user_id&lt;=6;</code></p>
+<p>（下面为过程图，请关注<strong>红色框与红色箭头</strong>）</p>
+<p><img src="images/image-20200526182102508.png" alt="image-20200526182102508"></p>
+<p><img src="images/image-20200526182230045.png" alt="image-20200526182230045"></p>
+</li>
+</ul>
+<p><img src="images/image-20200526182607464.png" alt=""></p>
+<p><img src="images/image-20200526183003486.png" alt=""></p>
+<ul>
+<li>e：最后，直接在索引中我们找到了user_id为2~6的用户信息。</li>
+</ul>
+<h5 id="③简单的拓展思考"><a href="#③简单的拓展思考" class="headerlink" title="③简单的拓展思考"></a>③简单的拓展思考</h5><p><strong>上面的例子可能简单了点，但却体现了B+tree查找数据时的优势。比如我们的数据有百万行，且user_id不是主键（这样InnoDB就不会自动将user_id设置为主键索引了），我们要查找数据时，就可以通过索引快速定位要查找的行，甚至可以通过B+tree叶子节点的双向指针来前后移动，而不是一行一行的去比较原始user_table原始表中每一行的user_id。</strong></p>
+<h5 id="④比较"><a href="#④比较" class="headerlink" title="④比较"></a>④比较</h5><p><strong>依照前面的图解与解释，我们理解了B+tree的大体结构与索引的大致流程，为了巩固前面提到的概念，那么我们开始新一轮的比较。</strong></p>
+<p><strong>存在索引与不存在索引，来比较两者之间的差距吧。</strong></p>
+<ul>
+<li><p><strong>无</strong>索引：</p>
+<ul>
+<li>当我们没有去创建索引时，我们面对一张上千万行级别的表时，只能一行一行的去扫描。</li>
+<li>例如，当我要根据用户名（username）去查询张三的电话号码的时候，mysql并不知道该用户的信息处在哪一行，所以mysql只能选择去一条一条地比对username是否符合条件。即使你很幸运，第一条记录的username就是张三，但mysql还是得去遍历整张user_table表。因为叫张三的人不止一个！</li>
+</ul>
+</li>
+<li><p><strong>有</strong>索引：</p>
+<ul>
+<li><p>当我们去创建关于username的索引时，我们根据username中的偏旁也好，a~z的英文字母次序也好，如果我们将相同名字的人分配到同一个叶子节点中，再从根节点出发到达叶子节点，仅仅需要个位数的比较次数！这比起原来的“一行一行地去原始表中查”来的轻松多了。</p>
+</li>
+<li><p>例如，我们将user_name是A开头的分配到同一个叶子节点，将user_name是B开头的分配到另一个叶子节点……以此类推。非叶子节点始终为我们提供索引前进的方向，叶子节点始终是索引前进的终点，储存着最终的真实数据。</p>
+<p>假如我们需要执行<code>select ut.* from user_table ut where ut.user_name like &#39;C%&#39;</code>，通过索引，我们就能快速定位那些user_name以C开头的用户的信息。</p>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>是不是很开心？因为即便数据量再大，只要通过索引，在B+tree结构的拥护下，我们只需比较几次就能得到结果，也就不用担心查询数据需要花太多时间了。
+
+但是，凡是都有利弊，下文中我们将来拿出一个章节来专门讨论一下索引的利与弊。</code></pre><h3 id="（3）MyISAM引擎中的B-tree索引"><a href="#（3）MyISAM引擎中的B-tree索引" class="headerlink" title="（3）MyISAM引擎中的B+tree索引"></a>（3）MyISAM引擎中的B+tree索引</h3><ul>
+<li>上文提到了InnoDB的聚集索引，其中解释了索引文件与数据文件是储存在同一个文件中。</li>
+<li>同时也提到了MyISAM的非聚集索引，其中解释了索引文件与数据文件相分离。</li>
+<li>但你或许还有些迷茫，但是请对比下面两张逻辑结构图，你就能大致明白两者的区别了。</li>
+</ul>
+<p><img src="images/image-20200526180436685-1590674143167.png" alt="image-20200526180436685"></p>
+<p>（<strong>↑</strong>图为 InnoDB引擎的聚集索引<strong>↑</strong>）</p>
+<p><img src="images/image-20200527091222693.png" alt="image-20200527091222693">（<strong>↑</strong>图为 MyISAM引擎的非聚集索引<strong>↑</strong>）</p>
+<p>为加深理解，作者在网上找了另一张图来诠释非聚集索引【感觉这图比我的好看多了，哎~】（该图源于网络）：<img src="images/image-20200527142838934.png" alt="image-20200527142838934"></p>
+<h1 id="5、凡事都有两面性，使用索引的利与弊"><a href="#5、凡事都有两面性，使用索引的利与弊" class="headerlink" title="5、凡事都有两面性，使用索引的利与弊"></a>5、凡事都有两面性，使用索引的利与弊</h1><h3 id="利："><a href="#利：" class="headerlink" title="利："></a>利：</h3><p>关于使用索引的好处，上文中重复了多次，都是在讲“提升查询速度”的话题。因为，它将你所设置为索引的字段进行重新排序，并储存到另外的地方（比如专门储存到索引文件），从而不影响原始表。使得每次查询该字段的时候，直接进入规则有序的索引文件进行查询，而不是进入混乱无序的原始表进行查询，这样就极大地减少了查找时间。</p>
+<h3 id="弊："><a href="#弊：" class="headerlink" title="弊："></a>弊：</h3><ul>
+<li><p>储存空间大小：</p>
+<p>先拿MyISAM的非聚集索引开刀：我们知道，假如我们没有创建索引时，只有一个*.myd文件，它只用来储存表中的数据。而当我们创建了索引，就会多出一个*.myi文件，它用来储存索引本身。</p>
+<p>因此，我们就需要考虑这个索引文件本身所占据的储存大小了。如果你去查看一下这个索引文件的大小，你会发现它占据的空间还是蛮大的（需要对照表中的数据量）。假如有上千万行的数据量，那这个索引文件所耗费的储存空间肯定是不小的。所以当一张表创建了太多索引的时候，很容易引起磁盘空间不足的情况。因此创建索引时也是需要进行适当考量的。</p>
+</li>
+<li><p>sql语句执行速度</p>
+<p>我们一直在讲索引有多么多么好，但是，那始终都是相对于“select”查询来说的。假如我们要更改表中用户的数据。比如<code>update user_table set user_phone = &#39;135935XXXX&#39; where user_id&gt;1 and user_id&lt;100000;</code>。</p>
+<p>试想一下，当我们没有索引的时候，我们需要改这10万行数据，那花费的时间就完全等于“改10万行数据的时间”。然而，我们如果加了索引，那除了要更改表中的10万行数据外，还需要更改索引中的10万行数据。</p>
+<p>暂且说update还算有良心的，因为它至少没有去触碰索引的排列顺序。但insert呢？delete呢？这两种动作都直接影响了索引的排列结构，比如删除中间的n个数据；或在中间插入n个数据，而该节点又达到了最大储存的数据，那这整个索引的全局排列次序都将或多或少地被影响到。</p>
+</li>
+<li><p>小总结</p>
+<p>因此，虽然索引能够帮助我们快速查找数据，但对CRUD中的CUD（增改删）却感到为难。索引应尽量应用到那些查询次数比较多的表中，而那些经常改改删删的表尽量选择不加索引。</p>
+<p>至于储存空间的问题，如果业务需要用索引进行优化，那就考虑增加储存空间吧，不是什么太大问题。</p>
+</li>
+</ul>
+<h1 id="6、唯一索引"><a href="#6、唯一索引" class="headerlink" title="6、唯一索引"></a>6、唯一索引</h1><ul>
+<li>唯一索引<ul>
+<li>它与前面的普通索引类似，不同的就是：索引列的值必须唯一，但允许有空值。</li>
+</ul>
+</li>
+</ul>
+<h1 id="7、单值索引与复合索引"><a href="#7、单值索引与复合索引" class="headerlink" title="7、单值索引与复合索引"></a>7、单值索引与复合索引</h1><h2 id="单值索引"><a href="#单值索引" class="headerlink" title="单值索引"></a>单值索引</h2><ul>
+<li><p><strong>概念</strong> ：一个索引包含一个字段，索引的排序仅排序这一个字段。同时一个表可以拥有多个单值索引。</p>
+<p>即<code>Index(column_01)</code></p>
+</li>
+<li><p><strong>介绍</strong></p>
+<p>到目前为止，介绍的索引都是单值索引，比如上文中只对user_id字段或只对user_name字段创建索引，然而这只是冰山一角，平时用的最多的还是复合索引。接下来开始复合索引的介绍吧。</p>
+</li>
+</ul>
+<h2 id="复合索引"><a href="#复合索引" class="headerlink" title="复合索引"></a>复合索引</h2><ul>
+<li><p><strong>概念</strong>：一个索引包含多个字段，索引根据多个列的进行排序。</p>
+<p>即<code>Index(column_01, column_02, column_03)</code></p>
+</li>
+<li><p><strong>排序方法</strong></p>
+<ul>
+<li><p>假设column_01是数字0<del>9，column_02是英文字母a\</del>z，column_03是中文字符串</p>
+<p>1、先根据column_01进行排序，即根据0~9的顺序进行排序</p>
+<p>2、当column_01相同时，再根据column_02进行排序</p>
+<p>3、当column_02相同时，再根据column_03进行分组（这里由于是中文，所以是分组，而不一定是排序）</p>
+</li>
+<li><p>可以类比group by分组，例如：</p>
+<p><code>select * from table where condition group by column_01, column_02, column_03</code></p>
+</li>
+</ul>
+</li>
+<li><p><strong>复合索引的B+tree结构</strong></p>
+<ul>
+<li><p>注意：很多文章将单值索引的B+tree结构都直接套用到了复合索引上，其实是不对了。还记得B+tree是将所有的数据都存放在叶子节点，而非叶子节点只负责为检索叶子节点划分区间嘛？对于复合索引，却并非如此，复合索引的B+tree的每个节点都包含了所有的索引键，并按索引键依次进行顺序排序。</p>
+</li>
+<li><p>上文中的单值索引（如图）：<img src="images/image-20200526180436685-1590674150603.png" alt="image-20200526180436685"></p>
+</li>
+<li><p>复合索引（如图）：<img src="images/image-20200527150928549.png" alt="image-20200527150928549"></p>
+</li>
+<li><p>查找顺序：</p>
+<ul>
+<li><p>当我们的sql语句为<code>select age, email, uname from table where age=15 and email = &#39;sfsfsfsf@sfsfsf.ccc&#39; and uname = &#39;张三小号&#39;</code>。进入B+tree，首先根据age的顺序进行查找，当age=15时，你可能会找到多行记录，这时根据email已排列好的顺序进行查找，当email相同时，比如“张三”和“张三小号”的email完全相同，就会根据uname进行查找。</p>
+<p>这查找速度确实是要比去原始表中一行一行地匹配要来的快。</p>
+</li>
+</ul>
+</li>
+<li><p>为什么每个节点中都要储存所有的索引键呢？</p>
+<ul>
+<li><p>问一个问题，你可能就会明白了。</p>
+<p>如果上千万行的数据中，有“国籍”这一个字段，而且到目前为止，表中的数据全都是“中国”国籍，那一个节点肯定放不下上千行的数据，所以必定会分为多个非叶子节点。</p>
+<p>提问：如果创建一个索引<code>Index（国籍， 性别，姓名）</code>，那这个索引的B+tree结构会是咋样的？</p>
+<p>你心中可能已经有答案为什么每个节点都要储存所有的索引键了。</p>
+<p>答：这是因为，当所有数据中，国籍都是“中国”，而你又将“国籍”字段作为第一个索引键放在了最前面，那mysql肯定会先根据“国籍”字段进行排列分组。又因为一个叶子节点放不下上千万行量级的数据，最后就会通过“性别”字段来先进行全局的排序。</p>
+<p>假如你每个非叶子节点仅保存第一个索引键（“国籍”字段），就像单值索引那样，那mysql就只能选择根据它那套乱的一批的排序算法进行排序了。因为在B+tree中的非叶子节点中它只看到了“国籍”这一字段。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>mysql 的 Explain</strong></p>
+<ul>
+<li><p>作用：用来查看sql语句的执行参数，方便技术人员分析慢查询</p>
+</li>
+<li><p>explain的使用</p>
+<ul>
+<li><p>这里推荐直接上mysql的官方手册查看explain的各个标识的作用与参数说明</p>
+<p>附带mysql5.7官方手册的explain out format介绍：</p>
+<p>（原文阅读令人愉悦，若读不懂英文，推荐使用翻译工具）</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">https://dev.mysql.com/doc/refman/5.7/en/explain-output.html</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p><strong>提醒</strong></p>
+<ul>
+<li>下文开始将使用explain对sql语句与索引进行剖析，请务必知晓explain的几个常用参数。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>最左原则</strong></p>
+<ul>
+<li><p>最左原则是针对复合索引而言的，简单的说，就是查询时不能将column_01、column_02、column_03的顺序给颠倒</p>
+</li>
+<li><p>比如说：</p>
+<ul>
+<li><p>先创建索引</p>
+<p><code>CREATE INDEX index_name ON table_name (column_01, column_02, column_03)</code></p>
+</li>
+<li><p>然后进行查询</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> column_01, column_02, column_03 <span class="keyword">from</span> table_name <span class="keyword">group</span> <span class="keyword">by</span> column_02</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>注意group by 后面跳过了column_01，直接就是column_02。这样是不被允许的，因为最左原则规定我们必须从column_01开始，才能到column_02。像这种直接跳过column_01的行为会使得索引直接失效。</li>
+<li>失效之后，mysql会直接回到原始表中，mysql会使用自己那套“极其缓慢”的排序方案进行group排序，这样就相当于跟<em>没有创建索引</em>一个样了。</li>
+<li>相信如果你理解复合索引在B+tree中的逻辑结构，其实就能够明白为什么会有“最左原则”这套规则了。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>实际操作01</p>
+<ul>
+<li><p>a：创建表和索引<img src="images/image-20200527132648431.png" alt="image-20200527132648431"></p>
+</li>
+<li><p>b：如图，我们暂且对主键索引id进行放置Play，暂时不管它。好了，我们创建了一个复合索引Index（age，email，uname），类型分别为int、varchar、varchar。所创建的索引命名为<code>idx_testtable_age_email_uname</code></p>
+</li>
+<li><p>c：插入一些数据</p>
+<p><img src="images/image-20200527134246866.png" alt="image-20200527134246866"></p>
+</li>
+<li><p>d：先查询，对比一下与c步骤图中的数据的顺序</p>
+<p><code>select age, email, uname from test_table;</code></p>
+<p><img src="images/image-20200527134432322.png" alt="image-20200527134432322"></p>
+<p>眼神尖锐的你可能发现了，查询出来的表先按age进行了排序，然后再按email进行排序，最后按uname进行排序。尽管我们并没有对其进行order by操作！<img src="images/image-20200527134702429.png" alt="image-20200527134702429"></p>
+</li>
+<li><p>e：使用explain进行分析<img src="images/image-20200527134826740.png" alt="image-20200527134826740"></p>
+<ul>
+<li>select_type列为simple，说明并没有用到子查询或union</li>
+<li>table指的就是当前的test_table表了</li>
+<li>type列为index：说明用到了索引</li>
+<li>possible_keys为null：只是mysql执行前判断可能不会用到索引而已，但是实际却用到了索引。所以mysql是真的傻，你说可能不会用到索引，我信你个鬼。</li>
+<li>key为 idx_testtable_age_email_uname：说明用到了我们创建的索引</li>
+<li>key_len为158：表示实际用到了的索引的字节长度。</li>
+<li>ref为NULL：表示没有引用外部数据</li>
+<li>rows为11：表示通过索引，查到了11行数据</li>
+<li>Extra为Using index：表示一些额外信息，比如这里用到了我们所创建的索引</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>- f：根据key_len推测使用了三个索引键，即age、email和uname。age占4 byte，email占62 byte，uname占92 byte。（这里还是简单地带各位读者，通过key_len来判断每次查询都用到了几个索引键吧）
+
+  **理由**：
+
+  因为是UTF-8编码，所以每个字符占3 byte。同时varchar还需要额外1~2 byte来存储长度。
+
+  其中int占4 byte；
+
+  email占（20 个字符\*3 byte）+1 byte（用来储存NULL值）+1 byte（储存长度）= 62 byte；
+
+  uname占（30 个字符 \* 3 byte )+1 byte +1 byte（存储长度） = 92 byte；
+
+  所以4+62+92刚好等于158。
+
+  为了使读者更能体会key_len的作用，请自行细品下图中的各个where与key_len的关系。![image-20200528095049861](images/image-20200528095049861.png)
+
+- g：得出结论
+
+  当查询`select age, email, uname from test_table;`时，mysql会自动去索引中找到我们想要数据，然后展现给查询者。</code></pre><ul>
+<li><p>实际操作02</p>
+<ul>
+<li><p>a：当我们执行<code>select age from test_table group by age;</code>。<img src="images/image-20200527162534043.png" alt="image-20200527162534043"></p>
+<p>ok，瞧Extra列，Using index，按照我们的意愿使用了索引。</p>
+</li>
+<li><p>b：当我们执行<code>select age from test_table group by age, email;</code>。<img src="images/image-20200527162809169.png" alt="image-20200527162809169"></p>
+<p>ok，瞧Extra列，Using index，还是按照我们的意愿使用了索引，没问题。</p>
+</li>
+<li><p>c：但当跳过age而直接去跳过email进行排序时，比如我们执行<code>select age from test_table group by email;</code><img src="images/image-20200527163044892.png" alt="image-20200527163044892">不ok了，灾难性的事件发生了，Using temporary、Using filesort！</p>
+<p>Using templrary：表示mysql会创建一个中间表去储存临时数据，这个过程的创建中间表、复制数据、删除中间表等操作可是十分的消耗性能的！</p>
+<p>Using filesort：表示mysql会去根据自己那慢的一批的排序算法进行排序，而不是直接利用我们已经排序创建好的索引。</p>
+<p>为什么？</p>
+<p>因为你跳过了“age”这第一个索引键！我们来回顾一下复合索引的B+tree逻辑结构图：<img src="images/image-20200527150928549.png" alt="image-20200527150928549">看看email是如何排序的，首先根据age进行分组排序，当age相同时的数据即为一组。而这一组中，由于age全都相同，所以索引会继续根据email进行排序。</p>
+</li>
+<li><p>d：得出结论</p>
+<p>因此，如果在索引中，你跳过了age而直接对email进行排序，但当age=15的条件下，在这一局部的节点中email肯定是顺序排列的。但如果是对于全局的email，那肯定都是混乱无序的，尽管局部有序。</p>
+<p>这就是为什么会有“最左原则”这个鬼东西问题的原因！</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="8、覆盖索引"><a href="#8、覆盖索引" class="headerlink" title="8、覆盖索引"></a>8、覆盖索引</h1><h5 id="（1）主键索引"><a href="#（1）主键索引" class="headerlink" title="（1）主键索引"></a>（1）主键索引</h5><ul>
+<li><p>我们前面不断地提及主键索引，我们只知道它会被自动创建，但未提及它自动创建所需要满足的条件。</p>
+</li>
+<li><p>①如果我们手动创建了Primary key， 那mysql就不会再给我们自动创建Primary key了</p>
+</li>
+<li><p>②当我们没有手动指定哪一列为Primary key，那mysql就会选择其中没有重复值且没有Null值的一列，来作为Primary key</p>
+</li>
+<li><p>③假如所有的列都满足“具有重复值”或“具有NULL值”其中一个条件，那就说明mysql无法自动地在我们所创建的这些字段中选择其中一个来作为Primary key。因此，它会隐式地创建一个字段来作为Primary key。</p>
+</li>
+<li><p>④当我们创建一个自定义索引然后通过指令<code>show index from table_name</code>查看当前表的所有索引的时候，都会看到一个Primary key：<img src="images/image-20200528105252805.png" alt="image-20200528105252805"></p>
+</li>
+</ul>
+<h5 id="（2）回表"><a href="#（2）回表" class="headerlink" title="（2）回表"></a>（2）回表</h5><p>在了解覆盖索引之前，我们需要知道什么是<strong>回表操作</strong>。</p>
+<p>我们继续采用上文中user_table这个表。不过这次所要创建的索引是<code>Index(age, uname)</code>。<img src="images/image-20200528111939087.png" alt="image-20200528111939087"></p>
+<p>首先我们会分为两个索引，一个是主键索引，一个是我们自定义的索引idx_testtable_age_uname。</p>
+<p>当我们执行<code>select email from test_table where age=15 and uname=&#39;张三&#39;;</code>时，我们知道age和uname是索引键，这两个字段自然会先被排序然后保存到索引文件中。而email是非索引键，索引文件中找不到email的相关信息。</p>
+<p>我们来用explain分析一下sql的执行结果：<img src="images/image-20200528112225645.png" alt="image-20200528112225645"></p>
+<p>从key中，我们知道我们使用了我们自定义的索引idx_testtable_age_uname。但Extra不再是Using index，而是Using where，为什么？。从字面意思看，就使用了条件筛选，当然这里指的并不是sql语句中的where关键字，而是指的当在索引中找到age=15的数据时，筛选uname=’张三’这个条件。</p>
+<p>出现Using where与我们的现在的主题没有太大关系，我们关心的是没有Using index这个关键提示，明明key列中说明了mysql已经使用过了我们所创建的所有，但为什么？</p>
+<p>这里其实就涉及到了回表操作，因为索引文件中并没有select email中的email的相关数据，所以就必须回到test_table这张原始表。但是怎么从索引的B+tree逻辑结构中回到test_table呢？还记得去前面提到的主键索引嘛？InnoDB引擎会隐式地将主键索引的索引值添加到每个自定义索引的后面，然后按照{自定义索引-&gt;主键索引-&gt;原始表}的顺序一步一步回到原始表去获得我们的email。<img src="images/image-20200528114710621.png" alt="image-20200528114710621"></p>
+<ul>
+<li><p><strong>效率关注</strong></p>
+<p>由于回表操作走了两个索引，所以效率方面肯定是要比只走一个索引要低一些的。</p>
+</li>
+</ul>
+<h5 id="（3）索引覆盖"><a href="#（3）索引覆盖" class="headerlink" title="（3）索引覆盖"></a>（3）索引覆盖</h5><p>上文回表操作中，执行的是<code>select email from test_table where age=15 and uname=&#39;张三&#39;;</code>。</p>
+<p>而现在我们需要执行<code>select age, uname from test_table where age=15 and uname=&#39;张三&#39;;</code>。</p>
+<p>对比一下两句sql，我们发现只有select的select_list不同，现在的age、uname都是idx_testtable_age_uname索引中的索引键。使用explain分析：<img src="images/image-20200528120729700.png" alt="image-20200528120729700"></p>
+<p>分析之后发现mysql使用了Using index。</p>
+<p>假如你理解上文的内容，其实不难发现，开篇到现在，文章中多多少少融入了一些包含索引覆盖的sql语句，只是主题关注点不同而没有进行分析。现在我们这句sql中并没有用到像email字段这样的非索引键，因此没必要进行回表操作。我们所需要的age和uname的数据，直接就可以从索引中获取，而不用大老远地跑回原始表中取数据。</p>
+<p>我们将这种直接从索引中取数据，而不用回表的现象，称为索引覆盖。</p>
+<h1 id="9、索引下推"><a href="#9、索引下推" class="headerlink" title="9、索引下推"></a>9、索引下推</h1><p>将持续更新，敬请期待~</p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">BinGCU</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://bingcu.com/2020/05/29/Mysql%E7%B4%A2%E5%BC%95/">http://bingcu.com/2020/05/29/Mysql%E7%B4%A2%E5%BC%95/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/article_covers/26.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><div class="post-reward"><a class="reward-button button--primary button--animated"> <i class="fa fa-qrcode"></i> Donate<div class="reward-main"><ul class="reward-all"><li class="reward-item"><img class="post-qr-code__img" src="/./img/wechat.png" alt="微信"/><div class="post-qr-code__desc">微信</div></li><li class="reward-item"><img class="post-qr-code__img" src="/./img/alipay.png" alt="支付寶"/><div class="post-qr-code__desc">支付寶</div></li></ul></div></a></div><nav class="pagination_post" id="pagination"><div class="next-post pull-full"><a href="/2020/05/29/Mysql%E5%A4%9A%E7%89%88%E6%9C%AC%E5%AE%89%E8%A3%85%EF%BC%88Window10%EF%BC%89/"><img class="next_cover" src="/img/article_covers/7.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">Mysql多版本安装（Window10）</div></div></a></div></nav><hr><div id="post-comment"><div class="comment_headling"><i class="fa fa-comments fa-fw" aria-hidden="true"></i><span> Comment</span></div><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: '73cb422933f7cdd16601',
+  clientSecret: '17643d7b7dcfb537cf98bc1354eba774c1a252e1',
+  repo: 'BingCUMaO.github.io',
+  owner: 'BingCUMaO',
+  admin: ['BingCUMaO'],
+  id: md5(decodeURI(location.pathname)),
+  language: 'zh-CN',
+  perPage: 10,
+  distractionFreeMode: true,
+  pagerDirection: 'last',
+  createIssueManually: false,
+  updateCountCallback: commentCount
+})
+gitalk.render('gitalk-container')
+
+function commentCount(n){
+  try {
+    document.getElementsByClassName('gitalk-comment-count')[0].innerHTML= n
+  } catch (e) {
+    return false
+  }
+}</script></div></article></main><footer id="footer" style="background-image: url(/img/article_covers/26.jpg)" data-type="photo"><div id="footer-wrap"><div class="copyright">&copy;2020 By BinGCU</div><div class="framework-info"><span>Driven </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div><div class="footer_custom_text">Hi, Welcome to come my blog.</div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="Read Mode"></i><i class="fa fa-plus" id="font_plus" title="Increase font size"></i><i class="fa fa-minus" id="font_minus" title="Decrease font size"></i><a class="translate_chn_to_cht" id="translateLink" href="javascript:translatePage();" title="Traditional Chinese and Simplified Chinese Conversion" target="_self">繁</a><i class="darkmode fa fa-moon-o" id="darkmode" title="Dark Mode"></i></div><div id="rightside-config-show"><div id="rightside_config" title="Setting"><i class="fa fa-cog" aria-hidden="true"></i></div><a id="to_comment" href="#post-comment" title="Scroll to comment"><i class="scroll_to_comment fa fa-comments">  </i></a><i class="fa fa-list-ul close" id="mobile-toc-button" title="Table of Contents" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="Back to top" aria-hidden="true"></i></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script id="ribbon_piao" mobile="true" src="/js/third-party/piao.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@3/instantpage.min.js" type="module"></script></body></html>
