@@ -12,6 +12,13 @@ body {
   font-family: Bell MT, Lato, Helvetica Neue For Number, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, PingFang SC, Hiragino Sans GB, MicrMicrosoft YaHei, Helvetica Neue For Number, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, PingFang SC, Hiragino Sans GB, "Microsoft YaHei", Helvetica Neue, Helvetica, Arial, sans-serif;
   line-height: 2;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 *::-webkit-scrollbar {
   width: 8px;
@@ -100,8 +107,8 @@ hr:before {
   transition: all 1s ease-in-out;
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
-  font-weight: 600;
-  font-family: 'Font Awesome 5 Free';
+  font-weight: normal;
+  font-family: FontAwesome;
 }
 iframe {
   margin: 0 0 1rem;
@@ -2015,6 +2022,11 @@ blockquote footer cite:before {
 @media screen and (min-width: 900px) {
   #aside_content .card-widget {
     margin-left: 15px;
+  }
+}
+@media screen and (max-width: 768px) {
+  #aside_content {
+    display: none;
   }
 }
 .category-content ol,
@@ -4334,8 +4346,7 @@ figure.gallery-group .gallery-group-name:after {
   top: 13px;
   left: 15px;
   font-size: larger;
-  font-weight: 600;
-  font-family: 'Font Awesome 5 Free';
+  font-family: 'FontAwesome';
 }
 .note.default {
   background-color: #f7f7f7;
