@@ -17,7 +17,7 @@ tags:
 
 ## 1、假如我们将架构分为dao层、service层和controller层。
 
-- 此时我们将文件保存到服务器的磁盘中存储，我们并不需要对数据库进行操作，只需要在磁盘上进行io操作。因此就没有了dao层的事情了。
+- 此时我们将文件保存到服务器的磁盘中存储，所以基本上不需要对数据库进行操作，只需要在磁盘上进行io操作即可。因此基本上就没有了dao层的事情了。为了简化代码，若存在对dao层操作的代码，下文中将会简单介绍而不全部写出。
 - 实现service层，我们需要封装service层的方法，同时spring考虑的很周到，为我们提供了一个专门用来文件下载的类：`org.springframework.http.ResponseEntity`。
 - 我们目前需要做的就是，通过这个现成的类，来对其再封装，封装成我们需要的样子。
   - 附带springframework的api文档：`https://docs.spring.io/spring/docs/5.3.0-SNAPSHOT/javadoc-api/`
@@ -43,6 +43,11 @@ public interface ResourcesParsingService {
      * @throws IOException
      */
     ResponseEntity<byte[]> obtainAvatarReponseEntity(String downloadFileName, String realPath ) throws IOException;
+    
+    /**
+    * 为了简化代码，这个方法将不在实现类中写出来，知道这个方法是用来查询file path即可
+    */
+    String queryAvatarPathByUserAccountStr( String userAccountStr);
     
 }
 ```
