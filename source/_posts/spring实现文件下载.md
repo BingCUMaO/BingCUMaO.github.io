@@ -1,6 +1,6 @@
 ---
-title: SpringMVC文件上传（前后端分离）
-date: 2020-06-21 9:15:00
+title: spring实现文件下载
+date: 2020-06-21 9:50:00
 categories:
 - springMVC
 tags:
