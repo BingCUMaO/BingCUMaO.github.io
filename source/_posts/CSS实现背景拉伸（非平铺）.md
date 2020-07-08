@@ -1,5 +1,5 @@
 ---
-title: CSS实现背景拉伸
+title: CSS实现背景拉伸（非平铺）
 date: 2020-05-30 14:13:40
 categories:
 - web前端

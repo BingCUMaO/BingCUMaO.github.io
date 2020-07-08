@@ -1,5 +1,5 @@
 ---
-title: CSS实现背景拉伸
+title: CSS实现背景自适应（非拉伸）
 date: 2020-06-24 23:40:40
 categories:
 - web前端
