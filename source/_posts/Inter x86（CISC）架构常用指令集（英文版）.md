@@ -2,12 +2,13 @@
 title: Inter x86（CISC）架构常用指令集（英文版）
 date: 2020-07-11 22:20:40
 categories:
-- 汇编
+- 逆向技术
 tags:
 - 汇编
 - 指令集
 - Inter
 - 架构
+- 逆向技术
 
 
 ---
