@@ -154,8 +154,8 @@ lodding_bg:
 
 # A simple 404 page
 error_404:
-  enable: false
-  subtitle: 'Page Not Found'
+  enable: true
+  subtitle: '404 Not Found'
   background:
 
 post_meta:
@@ -241,18 +241,18 @@ laibili:
   uid:
 
 gitalk:
-  enable: false
-  client_id:
-  client_secret:
-  repo:
-  owner:
-  admin:
+  enable: true
+  client_id: 73cb422933f7cdd16601
+  client_secret: 17643d7b7dcfb537cf98bc1354eba774c1a252e1
+  repo: BingCUMaO.github.io
+  owner: BingCUMaO
+  admin: BingCUMaO
   language: zh-CN # en , zh-CN , zh-TW
-  perPage: 10 # Pagination size, with maximum 100.
-  distractionFreeMode: false # Facebook-like distraction free mode.
+  perPage: 50 # Pagination size, with maximum 100.
+  distractionFreeMode: true # Facebook-like distraction free mode.
   pagerDirection: last # Comment sorting direction, available values are last and first.
   createIssueManually: false # Gitalk will create a corresponding github issue for your every single page automatically
-  count: false # dispaly comment count in top_img
+  count: true # dispaly comment count in top_img
 
 # valine comment system. https://valine.js.org
 valine:
