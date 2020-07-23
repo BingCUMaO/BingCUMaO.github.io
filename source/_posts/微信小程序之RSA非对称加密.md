@@ -74,27 +74,29 @@ tags:
 
   1. 引进我们需要的`jsencrypt.js`文件
 
-     - ```js
-       //为了防止ES5和ES6兼容性的问题，采用ES5的方式引进js文件
-       
-       //1、引进我们需要的`jsencrypt.js`文件
-       var jsencrypt = require('../../utils/jsencrypt.min.js');
-       
-       Page({
-       
-         data: {},
-         onLoad: function (options) {},
-         onReady: function () {},
-         onShow: function () {},
-         onHide: function () {},
-         onUnload: function () {},
-         onPullDownRefresh: function () {},
-         onReachBottom: function () {},
-         onShareAppMessage: function () {}
-       })
-       ```
+```js
+//为了防止ES5和ES6兼容性的问题，采用ES5的方式引进js文件
 
-       
+//1、引进我们需要的`jsencrypt.js`文件
+var jsencrypt = require('../../utils/jsencrypt.min.js');
+
+Page({
+
+    data: {},
+    onLoad: function (options) {},
+    onReady: function () {},
+    onShow: function () {},
+    onHide: function () {},
+    onUnload: function () {},
+    onPullDownRefresh: function () {},
+    onReachBottom: function () {},
+    onShareAppMessage: function () {}
+})
+```
+
+
+
+
 
   2. 从服务器端获取公钥（yuè）
 
@@ -102,7 +104,7 @@ tags:
 
   4. 将密文发给服务器（这样就能保证数据在网路传输过程中的绝密性了）
 
-- ```js
+```js
   wx.request({
       //2、指定服务器的url,获取公钥（yuè）
       url: 'http://localhost:8080/weixin/publickey',
@@ -142,7 +144,7 @@ tags:
           console.log("失败")
       }
   })
-  ```
+```
 
   
 
