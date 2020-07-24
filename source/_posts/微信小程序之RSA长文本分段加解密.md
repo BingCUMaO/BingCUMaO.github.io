@@ -56,8 +56,8 @@ blockEncryption: function(publickey, obj){
     //设置公钥
     rsa.setPublicKey(publickey)
 
-    //将obj对象转为字符串
-    //同时转为URI格式编码，以解决中文等多字节字符分割后无法解码的问题
+    //将obj对象转为JSON字符串
+    //同时将JSON字符串转为URI格式编码，以解决中文等多字节字符分割后无法解码的问题
     var str =  encodeURI(JSON.stringify(obj))
     //限定每次切割的明文片段的最大长度
     const max =117;
@@ -100,7 +100,7 @@ blockEncryption: function(publickey, obj){
  * 分段解密
  *
  * @param privateKey 密钥
- * @param ciphertext 被加密的文本，要求传进来的文本是URI编码格式，以解决中文字符占用多字节的情况
+ * @param ciphertext 被加密的文本
  * @return 返回明文
  * @throws Exception 解密异常
  */
@@ -125,9 +125,27 @@ public static String blockDecryption( String privateKey, String ciphertext) thro
         cleartext.append(part);
     }
 
-    //将URI格式的明文转化为UTF8格式的明文，然后返回该明文
-    String urlFormatText = cleartext.toString();
-    return URLDecoder.decode(urlFormatText,"UTF-8");
+    //返回明文
+    return cleartext.toString();
 }
+```
+
+
+
+
+
+***注意：***
+
+**传进来的`ciphertext`文本是前端为了解决中文字符等字符占用多字节问题，转化为URI编码格式后，再将加密成的n个密文片段组成在一起的。**
+
+**因此该方法返回后的明文是URI格式的，记得转化成`UFT-8`的编码格式：**
+
+
+
+```java
+import java.net.URLDecoder;
+
+String urlFormatText = RSAEncrypt.blockDecryption(privateKey, ciphertext);
+String cleartext = URLDecoder.decode(urlFormatText, "UTF-8");
 ```
 
