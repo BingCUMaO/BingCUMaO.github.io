@@ -223,9 +223,12 @@ Page({
            String publicKeyString = new String(Base64.encodeBase64(publicKey.getEncoded()));
            // 获得密钥字符串
            String privateKeyString = new String(Base64.encodeBase64((privateKey.getEncoded())));
-           // 将公钥和密钥保存到Map
-           //key:公钥，  value:密钥
-           keyMap.put(publicKeyString, privateKeyString);
+           
+           synchronized (keyMap){
+               // 将公钥和私钥保存到Map
+               //key:公钥，  value:私钥
+               keyMap.put(publicKeyString, privateKeyString);
+           }
    
            //返回当前生成的公钥
            return publicKeyString;
@@ -279,6 +282,19 @@ Page({
        public static String obtainPrivateKey(String publicKey){
            return keyMap.get(publicKey);
        }
+       
+       
+       /**
+        * 删除键值对
+        *
+        * @param publicKey 公钥
+        * @return 被删除的密钥
+        */
+       public  static String dropKeyPair(String publicKey){
+           synchronized (keyMap){
+               return keyMap.remove(publicKey);
+           }
+       }
    }
    ```
 
@@ -323,10 +339,13 @@ Page({
        @RequestMapping("/uploader")
        public String upload(@RequestBody CipherObj cipherObj){
    
+           //获得密钥后就把对应的 密钥对 从密钥管理者中删除
+           //因为生成的密钥的一次性的，所以不管执行成不成功，之后该 密钥对 都没用了
            String privateKey = RSAEncrypt.obtainPrivateKey(cipherObj.getPublicKey());
-           String clearText = null;
+           RSAEncrypt.dropKeyPair(cipherObj.getPublicKey());
+           
            try {
-               clearText = RSAEncrypt.decrypt(cipherObj.getCiphertext(), privateKey);
+               String clearText = RSAEncrypt.decrypt(cipherObj.getCiphertext(), privateKey);
                System.out.println("解密后的明文：");
                System.out.println(clearText);
    
@@ -335,22 +354,18 @@ Page({
    
            } catch (Exception e) {
                e.printStackTrace();
-           }finally {
-               if (clearText==null){
-                   return "上传失败";
-               }else {
-                   return "假装上传成功";
-               }
+               return "false";
            }
-   
+           
+           return "true";
        }
    
    }
    ```
-
-   ```java
-package top.bingcu.web.domain.to;
    
+```java
+   package top.bingcu.web.domain.to;
+
    /**
     * 前后端统一的密文收发格式
     */
