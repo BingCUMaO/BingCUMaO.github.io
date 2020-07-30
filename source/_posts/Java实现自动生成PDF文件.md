@@ -135,6 +135,10 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.*;
 
 public class PdfUtil {
+    //重载方法
+    public void fillTemplate(Map<String,Object> datasMap,File outFilePath,File templatePath) throws IOException, DocumentException {
+        this.fillTemplate(datasMap, outFilePath.getAbsolutePath(), templatePath.getAbsolutePath());
+    }
 
     /**
      * 填充pdf模板内容，生成一个新的pdf文件
@@ -151,6 +155,9 @@ public class PdfUtil {
         
         //获取所有可编辑内容的控件
         AcroFields form = stamper.getAcroFields();
+        //获得pdf容器，准备添加图片，图片可通过datasMap传进来
+        //由于图片域处于pdf模板的第二页，因此传入参数2
+        PdfContentByte underContent = stamper.getUnderContent(2);
 
         java.util.Iterator<String> it = form.getFields().keySet().iterator();
         while (it.hasNext()) {
@@ -158,22 +165,40 @@ public class PdfUtil {
             String value = datasMap.get(name)!=null?datasMap.get(name).toString():null;
             
             //输出日志
-            System.out.print("[PDF] 已填充内容："+name);
-            System.out.print("\t\t\t\t\t\t");
-            System.out.println("类型："+form.getFieldType(name));
+            System.out.println("[PDF] 已填充内容："+"\t\t\t类型："+form.getFieldType(name)+"\t\t\t"+name+"\t\t\t"+"文本值："+value);
 
-            //这里的getFieldType其实还有其他类型，由于上面的pdf模板只用到了复选框和文本框，因此就只列出这两个。
+            //这里的getFieldType其实还有其他类型，由于上面的pdf模板只用到了复选框、文本框和签名域，因此就只列出这三个。
             //如果想知道其他的内容，可以追踪到它里面的源码里看详情。
             switch (form.getFieldType(name)){
+                case 2: 
                     //复选框，作者看过它的源码，发现如果第三个参数如果不设置它，而是像文本宽那样调用它，那复选框勾选的默认样式将不是打钩，而是打叉
-                case 2: form.setField(name, value, true);
+                    form.setField(name, value, true);
                     break;
+                case 4: 
                     //文本框
-                case 4: form.setField(name,value);
+                    form.setField(name,value);
+                    break;
+                case 7:         
+                    //signature图片域
+                    
+                    //从datasMap中获取图片
+                    Image signature = (Image) datasMap.get(name);
+                    //设置图片大小
+                    signature.scaleToFit(100,120);
+                    //由于pdf模板中设置了两个图片域，因此会有两个图片准备填装进去，所以分别设置两张图片的位置
+                    if (name.equals("signature1")){
+                        signature.setAbsolutePosition(200, 170);
+                    } else if (name.equals("signature2")) {
+                        signature.setAbsolutePosition(460, 170);
+                    } else {
+                         break;
+                    }
+
+                    underContent.addImage(signature);
                     break;
             }
         }
-        // 如果为false那么生成的PDF文件还能编辑，一定要设为true
+        // 如果为false那么生成的PDF文件还能编辑，所以必须要设为true
         stamper.setFormFlattening(true);
         stamper.close();
 

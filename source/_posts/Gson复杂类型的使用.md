@@ -148,7 +148,7 @@ private static  class BasicInfoDeserializer implements JsonDeserializer<BasicInf
 
 
 ```java
-private static class BasicDeserializer implements JsonDeserializer<HomeInfo>{
+private static class BasicDeserializer implements JsonDeserializer<Basic>{
 
     @Override
     public Basic deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
