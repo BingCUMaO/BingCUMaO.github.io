@@ -616,3 +616,127 @@ public class RSAEncrypt {
 }
 ```
 
+```js
+
+generateKeyPair: function(){
+    var rsa = new jsencrypt.JSEncrypt();
+    var keys = rsa.getKey()
+    var publicKey  = keys.getPublicKey();
+    var privateKey = keys.getPrivateKey();
+
+    publicKey = publicKey.replace("-----BEGIN PUBLIC KEY-----", "");
+    publicKey = publicKey.replace("-----END PUBLIC KEY-----", "")
+    publicKey = publicKey.replace(" ", "")
+
+    privateKey = privateKey.replace("-----BEGIN RSA PRIVATE KEY-----", "")
+    privateKey = privateKey.replace("-----END RSA PRIVATE KEY-----", "")
+    privateKey = privateKey.replace(" ", "");
+
+
+    var pair = {}
+    pair.publicKey = publicKey
+    pair.privateKey = privateKey
+
+    return pair;
+}
+
+//分段加密，返回json格式的对象
+blockEncryption: function(publickey, str){
+    var rsa = new jsencrypt.JSEncrypt();
+    rsa.setPublicKey(publickey)
+
+    const max =117;
+
+    var arr=[]
+    while(str.length>max){
+        var part = str.substr(0, max)
+        str = str.slice(max)
+
+        const ciphertext = rsa.encrypt(part)
+        arr.push(ciphertext)
+    }
+    const ciphertext = rsa.encrypt(str)
+    arr.push(ciphertext)
+
+    var result = "";
+    for(var i = 0;i<arr.length;i++){
+        result += arr[i]
+    }
+    return result;
+}
+
+blockDecryption: function(privateKey, str){
+    var rsa = new jsencrypt.JSEncrypt();
+    rsa.setPrivateKey(privateKey)
+
+    const max = 172;
+
+    var arr = []
+    while(str.length>max){
+        var part = str.substr(0, max)
+        str = str.slice(max)
+
+        const cleartext = rsa.decrypt(part)
+        arr.push(cleartext)
+    }
+    const cleartext = rsa.decrypt(str)
+    arr.push(cleartext)
+
+    var result = "";
+    for(var i = 0;i<arr.length;i++){
+        result+=arr[i];
+    }
+    return result;
+}
+
+blockDecryptFile: function(fileBytes, privateKey,  weight){
+    var rsa = new jsencrypt.JSEncrypt();
+    rsa.setPrivateKey(privateKey)
+
+    const block = 172;
+    var bigBlock = block*weight
+    var spectator = null
+    var participant  = null
+    if(weight*block<fileBytes.length){
+        spectator = fileBytes.slice(bigBlock)
+        participant = fileBytes.substr(0, bigBlock)
+    }else{
+        spectator = ""
+        participant = fileBytes
+    }
+
+    var list = []
+    var tick = 0;
+    while(tick++<weight&&participant.length>0){
+        var part = participant.substr(0, block)
+        participant = participant.slice(block)
+
+        var cleartext = rsa.decrypt(part)
+        list.push(cleartext)
+    }
+    list.push(spectator)
+
+    var result = ""
+    tick = 0;
+    while(tick++<list.length){
+        result += list[tick];
+    }
+
+    return result;
+}
+
+generateUuid:function() {
+    var s = [];
+    var hexDigits = "0123456789abcdef";
+    for (var i = 0; i < 36; i++) {
+        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+    }
+    s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
+    s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+    s[8] = s[13] = s[18] = s[23] = "-";
+
+    var uuid = s.join("");
+    return uuid;
+}
+```
+
