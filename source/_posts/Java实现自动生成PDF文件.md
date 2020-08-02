@@ -158,6 +158,11 @@ public class PdfUtil {
         //获得pdf容器，准备添加图片，图片可通过datasMap传进来
         //由于图片域处于pdf模板的第二页，因此传入参数2
         PdfContentByte underContent = stamper.getUnderContent(2);
+        
+        //为解决字体库中有些中文字体不存在而不显示的问题，这里直接从某个路径中读取本地的msyh.ttf（微软雅黑字体）进行字体设置
+        File fontPath = new File(new File("").getAbsoluteFile() + "/" + "pdfs/font/msyh.ttf");
+        BaseFont baseFont = BaseFont.createFont(fontPath.getAbsolutePath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        form.addSubstitutionFont(baseFont);
 
         java.util.Iterator<String> it = form.getFields().keySet().iterator();
         while (it.hasNext()) {
