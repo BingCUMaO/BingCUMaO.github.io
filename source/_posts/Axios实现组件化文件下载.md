@@ -19,7 +19,7 @@ tags:
 - 首先为整个项目配置一些文件下载的公共部分：
 
 ```js
-import request from 'axios'
+import axios from 'axios'
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 // 创建axios实例
@@ -44,14 +44,14 @@ export default request
 
 
 ```js
-//导入上面的组件request组件，对文件下载进行下一步的封装
+//导入上面的request.js组件，对文件下载进行下一步的封装
 import request from '@/utils/request'
 
 //这里以下载pdf文件为例
-//其中query中有文件下载请求身份信息和一个uuid
+//其中query中有文件下载请求的身份信息和一个uuid
 export function downloadPdf(query) {
   return request({
-    url: '/hello/downloader/pdf',
+    url: '/bingcu/downloader/pdf',
     method: 'post',
     params: query,
     responseType: 'blob'
@@ -65,12 +65,13 @@ export function downloadPdf(query) {
       //将二进制数据保存到本地缓存
       let url = window.URL.createObjectURL(new Blob([response]))
       let link = document.createElement('a')
+      //隐藏该链接
       link.style.display = 'none'
       link.href = url
       //这里的文件名就直接用query对象中的一个uuid身份信息来命名
       link.setAttribute('download', query.uuid+'.pdf')		
 
-      //模拟点击该链接，由于该链接除了href属性外没有其他信息，所以在界面是看不到该链接的
+      //模拟点击该链接
       document.body.appendChild(link)
       link.click()
     })(response)
@@ -82,5 +83,5 @@ export function downloadPdf(query) {
 
 # 第三步
 
-- 剩下第三步就是`query`具体有什么参数，那就是和后端的交互问题了，由于在项目的文件下载中需要对身份进行验证，所以`query`对象的属性就几乎都是关于身份信息的相关数据了。
+- 剩下第三步就是关于`query`具体有哪些参数了，但这已经是与后端的交互问题了，由于作者在其他项目的文件下载中需要对身份进行验证，所以就假设一下`query`对象的属性就几乎都是关于身份信息的相关数据了。
 
