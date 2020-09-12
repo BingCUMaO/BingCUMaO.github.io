@@ -1,5 +1,5 @@
 ---
-title: Mysql安装(Linux)【转载】.md
+title: Mysql安装(Linux)【转载】
 date: 2020-09-11 23:13:40
 categories:
 - mysql
