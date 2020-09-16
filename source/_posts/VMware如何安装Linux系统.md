@@ -13,13 +13,13 @@ tags:
 # 1、镜像下载
 
 - 作者推荐几个目前个人正在使用的linux系统镜像的相关站点。
-  - [清华大学开源软件镜像站](mirrors.tuna.tsinghua)	mirrors.tuna.tsinghua
-  - [Linux镜像下载站点](mirrors.ustc.edu.cn) mirrors.ustc.edu.cn
-  - [CentOS中文站](https://www.centoschina.cn/)  https://www.centoschina.cn/ 
+  - 清华大学开源软件镜像站	mirrors.tuna.tsinghua
+  - Linux镜像下载站点 mirrors.ustc.edu.cn
+  - CentOS中文站  https://www.centoschina.cn/ 
 
 
 
-1. 例如我们从[Linux镜像下载站点](mirrors.ustc.edu.cn)这个站点下载我们需要的系统镜像
+1. 例如我们从`Linux镜像下载站点`这个站点下载我们需要的系统镜像
 
 ![image-20200916144646117](VMware%E5%A6%82%E4%BD%95%E5%AE%89%E8%A3%85Linux%E7%B3%BB%E7%BB%9F/image-20200916144646117.png)
 
