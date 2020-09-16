@@ -1,6 +1,6 @@
 ---
 title: VMware如何安装Linux系统
-date: 2020-09-16 15:01:40
+date: 2020-09-16 19:01:40
 categories:
 - linux
 tags:
@@ -13,9 +13,9 @@ tags:
 # 1、镜像下载
 
 - 作者推荐几个目前个人正在使用的linux系统镜像的相关站点。
-  - [清华大学开源软件镜像站](mirrors.tuna.tsinghua)
-  - [Linux镜像下载站点](mirrors.ustc.edu.cn)
-  - [CentOS中文站](https://www.centoschina.cn/)
+  - [清华大学开源软件镜像站](mirrors.tuna.tsinghua)	mirrors.tuna.tsinghua
+  - [Linux镜像下载站点](mirrors.ustc.edu.cn) mirrors.ustc.edu.cn
+  - [CentOS中文站](https://www.centoschina.cn/)  https://www.centoschina.cn/ 
 
 
 
