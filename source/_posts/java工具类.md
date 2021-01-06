@@ -94,12 +94,14 @@ public class ZipUtil {
      * @author isea533
      */
     public static void unZipFiles(String zipPath,String descDir)throws IOException{
-        //处理路径传进来时的"/"or"\", 无则添加
+        //处理路径传进来时的"\"为"/", 无则添加
+        descDir.replaceAll("\\\\", "/");
         Character lastChar = descDir.charAt(descDir.length() - 1);
         if (!lastChar.equals('/'))
             descDir += "/";
-        else if (!lastChar.equals("\\"))
-            descDir += "\\";
+//        else
+//        if (!lastChar.equals("\\"))
+//            descDir += "\\";
         
         unZipFiles(new File(zipPath), descDir);
     }
