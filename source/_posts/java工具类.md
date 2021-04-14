@@ -1,5 +1,5 @@
 ---
-title: java工具类.md
+title: java工具类
 date: 2021-01-05 12:00:00
 categories:
 - java
