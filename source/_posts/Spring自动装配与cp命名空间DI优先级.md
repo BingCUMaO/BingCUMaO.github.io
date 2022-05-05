@@ -2,7 +2,7 @@
 title: Spring自动装配与cp命名空间DI优先级
 date: 2020-05-30 14:13:40
 categories:
-- spring
+- 技术博客
 tags:
 - spring
 

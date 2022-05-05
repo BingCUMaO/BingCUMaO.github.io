@@ -2,7 +2,7 @@
 title: Linux挂载新硬盘【转载】
 date: 2020-09-12 9:30:40
 categories:
-- linux
+- 技术博客
 tags:
 - linux
 

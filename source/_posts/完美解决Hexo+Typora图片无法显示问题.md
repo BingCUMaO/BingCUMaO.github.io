@@ -2,7 +2,7 @@
 title: 完美解决Hexo+Typora图片无法显示问题
 date: 2020-07-19 21:50:40
 categories:
-- Hexo
+- 技术博客
 tags:
 - github
 - Hexo

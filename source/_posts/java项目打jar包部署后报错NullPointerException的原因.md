@@ -2,7 +2,7 @@
 title: java项目打jar包部署后报错NullPointerException的原因
 date: 2020-08-6 13:10:40
 categories:
-- Errors集合
+- 技术博客-Errors集合
 tags:
 - springBoot
 - Errrors

@@ -2,7 +2,7 @@
 title: PE(Portable Executable) 思维导图
 date: 2020-07-14 16:30:40
 categories:
-- 逆向技术
+- 技术博客
 tags:
 - .NT
 - 逆向技术

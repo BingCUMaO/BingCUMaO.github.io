@@ -2,7 +2,7 @@
 title: java工具类
 date: 2021-01-05 12:00:00
 categories:
-- java
+- 技术博客
 
 tags:
 - java

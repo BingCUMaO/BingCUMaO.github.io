@@ -2,7 +2,7 @@
 title: Gson复杂类型的使用
 date: 2020-07-25 22:00:00
 categories:
-- Java
+- 技术博客
 
 tags:
 - Java

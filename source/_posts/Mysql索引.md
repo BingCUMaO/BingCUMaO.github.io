@@ -2,7 +2,7 @@
 title: Mysql索引
 date: 2020-05-30 14:13:40
 categories:
-- mysql
+- 技术博客
 tags:
 - mysql
 - 索引

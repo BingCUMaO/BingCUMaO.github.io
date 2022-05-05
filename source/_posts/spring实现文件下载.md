@@ -2,7 +2,7 @@
 title: spring实现文件下载
 date: 2020-06-21 9:50:00
 categories:
-- springMVC
+- 技术博客
 tags:
 - springMVC
 - spring

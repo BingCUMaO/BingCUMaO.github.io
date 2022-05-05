@@ -2,7 +2,7 @@
 title: Java实现自动生成PDF文件
 date: 2020-07-25 20:00:00
 categories:
-- Java
+- 技术博客
 
 tags:
 - Java

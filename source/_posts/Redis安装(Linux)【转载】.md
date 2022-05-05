@@ -1,12 +1,16 @@
-```
+---
 title: Redis安装(Linux)【转载】
 date: 2020-09-12 21:30:40
 categories:
-- redis
+- 技术博客
 tags:
 - redis
 - linux
-```
+---
+
+
+
+
 
 
 

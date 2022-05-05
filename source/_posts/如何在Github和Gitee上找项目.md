@@ -2,7 +2,7 @@
 title: 如何在Github和Gitee上找项目
 date: 2021-09-27 13:00:40
 categories:
-- 教程
+- 技术博客
 tags:
 - github
 - gitee

@@ -2,7 +2,7 @@
 title: SpringMVC文件上传（前后端分离）
 date: 2020-06-20 9:25:00
 categories:
-- springMVC
+- 技术博客
 tags:
 - springMVC
 - 文件上传

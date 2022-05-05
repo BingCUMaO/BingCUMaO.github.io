@@ -2,7 +2,7 @@
 title: Axios实现组件化文件下载
 date: 2020-08-02 21:00:00
 categories:
-- axios
+- 技术博客
 tags:
 - axios
 - js

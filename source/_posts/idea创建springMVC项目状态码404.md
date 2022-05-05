@@ -2,7 +2,7 @@
 title: idea创建springMVC项目状态码404
 date: 2020-05-30 14:13:40
 categories:
-- Errors集合
+- 技术博客-Errors集合
 tags:
 - springMVC
 - 404

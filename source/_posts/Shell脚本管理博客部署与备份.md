@@ -2,7 +2,7 @@
 title: Shell脚本自动化管理博客部署与备份
 date: 2020-07-19 18:50:40
 categories:
-- Shell
+- 技术博客
 tags:
 - github
 - gitee

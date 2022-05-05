@@ -1,3 +1,24 @@
+---
+title: GZPYP Software Association Online Judge使用
+date: 2021-04-14 22:00:00
+categories:
+- 其他
+
+tags:
+- Java
+- Gson
+
+
+
+
+---
+
+
+
+# 
+
+
+
 # 一、比赛用户注册
 
 1. 首先进入首页`http://oj.bingcu.top:22202/voj`点击创建账户

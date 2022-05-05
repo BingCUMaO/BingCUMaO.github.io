@@ -2,8 +2,7 @@
 title: 使用jquery的ajax接收处理form提交后返回的数据
 date: 2020-06-20 11:00:00
 categories:
-- web前端
-- Jquery
+- 技术博客
 tags:
 - Jquery
 - AJAX
