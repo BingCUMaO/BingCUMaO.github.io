@@ -2,7 +2,7 @@
 title: contextproperty-placeholder location=jdbc.properties 报错的解决办法
 date: 2020-05-30 14:13:40
 categories:
-- Errors集合
+- 技术博客-Errors集合
 tags:
 - spring
 - mybatis

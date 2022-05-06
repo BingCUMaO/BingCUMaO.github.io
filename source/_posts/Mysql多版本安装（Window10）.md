@@ -2,7 +2,7 @@
 title: Mysql多版本安装（Window10）
 date: 2020-05-30 14:13:40
 categories:
-- mysql
+- 技术博客
 tags:
 - mysql
 - 多版本

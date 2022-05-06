@@ -2,10 +2,10 @@
 title: 解决github访问慢问题
 date: 2020-05-30 14:13:40
 categories:
-- 网络
+- 技术博客
 tags:
 - github
-- 网速
+- 网络
 
 
 ---
