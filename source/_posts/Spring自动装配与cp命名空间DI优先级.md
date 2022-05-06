@@ -13,6 +13,8 @@ tags:
 
 
 
+
+
 ***
 ##### 先说结论：
 #### Spring使用自动装配时，同一个bean配置文件下，类型为引用的Spring自动装配中，其DI（dependency injection）优先级高于同一个标签中的c命名空间的DI优先级，而P命名空间的优先级高于自动装配。
