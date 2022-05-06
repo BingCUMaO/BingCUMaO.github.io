@@ -4,8 +4,8 @@ date: 2020-09-12 21:30:40
 categories:
 - 技术博客
 tags:
-- redis
-- linux
+- Redis
+- Linux
 ---
 
 

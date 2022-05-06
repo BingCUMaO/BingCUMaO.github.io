@@ -4,7 +4,7 @@ date: 2020-05-30 14:13:40
 categories:
 - 技术博客
 tags:
-- mysql
+- Mysql
 - 索引
 
 #使用hexo-typora-image进行联动,由于设置了根目录的.yml文件的post_asset_folder: true，以及typora的图片复制目录为./${filename}/		

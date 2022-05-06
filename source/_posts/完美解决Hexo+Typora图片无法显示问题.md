@@ -4,7 +4,7 @@ date: 2020-07-19 21:50:40
 categories:
 - 技术博客
 tags:
-- github
+- Github
 - Hexo
 - Typora
 

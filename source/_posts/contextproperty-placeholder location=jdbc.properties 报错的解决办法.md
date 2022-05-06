@@ -4,8 +4,8 @@ date: 2020-05-30 14:13:40
 categories:
 - 技术博客-Errors集合
 tags:
-- spring
-- mybatis
+- Spring
+- Mybatis
 - Errrors
 
 ---
