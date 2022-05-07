@@ -5,7 +5,7 @@ categories:
 - 技术博客
 tags:
 - Jquery
-- AJAX
+- Ajax
 - 文件上传
 
 
