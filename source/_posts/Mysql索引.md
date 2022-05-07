@@ -497,7 +497,6 @@ c步骤：
       - rows为11：表示通过索引，查到了11行数据
       - Extra为Using index：表示一些额外信息，比如这里用到了我们所创建的索引
 
-      
 
     - f：根据key_len推测使用了三个索引键，即age、email和uname。age占4 byte，email占62 byte，uname占92 byte。（这里还是简单地带各位读者，通过key_len来判断每次查询都用到了几个索引键吧）
 
