@@ -4,9 +4,9 @@ date: 2020-05-30 14:13:40
 categories:
 - 技术博客-Errors集合
 tags:
-- springMVC
+- SpringMVC
 - 404
-- idea
+- Idea
 
 
 ---

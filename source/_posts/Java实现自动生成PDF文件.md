@@ -6,11 +6,7 @@ categories:
 
 tags:
 - Java
-- pdf
-
-
-
-
+- Pdf
 
 ---
 
